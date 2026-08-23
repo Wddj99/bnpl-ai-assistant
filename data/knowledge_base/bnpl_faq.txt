@@ -1,0 +1,32 @@
+BNPL CUSTOMER SUPPORT KNOWLEDGE BASE
+
+PAYMENT SCHEDULE
+
+Customers can split eligible purchases into installment payments.
+The number of installments and the payment schedule depend on
+the purchase and customer eligibility.
+
+LATE PAYMENT
+
+If a customer misses a scheduled payment, the outstanding payment
+remains due. Customers should review their payment schedule and
+complete the outstanding payment as soon as possible.
+
+REFUNDS
+
+Refunds depend on the merchant's refund policy and the status
+of the purchase. When a refund is approved, the corresponding
+installment plan may be adjusted according to the applicable
+refund process.
+
+ELIGIBILITY
+
+Eligibility for installment payments depends on several factors,
+including the purchase, customer information, and internal
+eligibility criteria.
+
+PAYMENT METHODS
+
+Customers can use supported payment methods to complete scheduled
+installment payments. Available payment methods may vary depending
+on the customer's account and region.
