@@ -134,8 +134,18 @@ print(
     f"({answer_correct}/{len(questions)})"
 )
 
-print("\n" + "=" * 50)
-print("EVALUATION RESULTS")
-print("=" * 50)
-print(f"Correct: {correct}/{len(questions)}")
-print(f"Retrieval Accuracy: {accuracy:.1f}%")
+print("\n" + "=" * 60)
+print("FINAL EVALUATION RESULTS")
+print("=" * 60)
+
+print(
+    f"Retrieval Accuracy: "
+    f"{retrieval_accuracy:.1f}% "
+    f"({retrieval_correct}/{len(questions)})"
+)
+
+print(
+    f"Answer Quality Pass Rate: "
+    f"{answer_accuracy:.1f}% "
+    f"({answer_correct}/{len(questions)})"
+)
