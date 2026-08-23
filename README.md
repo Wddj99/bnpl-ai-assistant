@@ -44,31 +44,31 @@ AI Generated Answer
 - FLAN-T5
 - NumPy
 - CSV
-
 ## Project Structure
 
-bnpl-ai-assistant/
-│
-├── app.py
-├── README.md
-├── requirements.txt
-├── .gitignore
-│
-├── data/
-│   └── knowledge_base/
-│       └── bnpl_faq.txt
-│
-├── evaluation/
-│   ├── evaluate.py
-│   └── test_questions.csv
-│
-└── src/
-    ├── data_processing.py
-    ├── embeddings.py
-    ├── retrieval.py
-    ├── generator.py
-    └── test_rag.py
+The project is organized into the following components:
 
+- app.py — Streamlit user interface and application entry point
+- README.md — Project documentation
+- requirements.txt — Python dependencies
+- .gitignore — Git ignored files
+
+### Data
+
+- data/knowledge_base/bnpl_faq.txt — BNPL knowledge base
+
+### Evaluation
+
+- evaluation/evaluate.py — Evaluation script
+- evaluation/test_questions.csv — Evaluation test questions
+
+### Source Code
+
+- src/data_processing.py — Knowledge base processing and chunking
+- src/embeddings.py — Text embedding generation
+- src/retrieval.py — FAISS vector retrieval
+- src/generator.py — AI answer generation
+- src/test_rag.py — RAG system tests
 ## RAG Pipeline
 
 ### 1. Knowledge Base
