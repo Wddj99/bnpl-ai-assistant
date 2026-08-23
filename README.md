@@ -1,5 +1,6 @@
 # BNPL AI Assistant
 ![BNPL AI Assistant](image.png)
+### 🚀 [Try the Live App](https://bnpl-ai-assistant.streamlit.app/)
 An AI-powered customer support assistant for Buy Now, Pay Later (BNPL) services.
 
 This project uses Retrieval-Augmented Generation (RAG) to retrieve relevant information from a BNPL knowledge base and generate concise, customer-friendly answers.
