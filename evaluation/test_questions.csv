@@ -1,0 +1,11 @@
+question,expected_topic
+What happens if I miss a payment?,LATE PAYMENT
+How can I pay my installments?,PAYMENT METHODS
+Can I split my purchase into installments?,PAYMENT SCHEDULE
+What determines whether I am eligible?,ELIGIBILITY
+What happens when I receive a refund?,REFUNDS
+What happens if a scheduled payment is missed?,LATE PAYMENT
+What payment methods can I use?,PAYMENT METHODS
+How many installments can I make?,PAYMENT SCHEDULE
+What factors affect installment eligibility?,ELIGIBILITY
+How does a refund affect my installment plan?,REFUNDS
