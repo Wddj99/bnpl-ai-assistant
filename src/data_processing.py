@@ -13,15 +13,18 @@ def load_knowledge_base(file_path):
     return path.read_text(encoding="utf-8")
 
 
-def create_chunks(text, chunk_size=100):
+def create_chunks(text):
     """
-    Split the knowledge base into smaller text chunks.
+    Split the knowledge base into sections using topic headings.
     """
-    words = text.split()
+    sections = text.split("\n\n")
+    
     chunks = []
 
-    for i in range(0, len(words), chunk_size):
-        chunk = " ".join(words[i:i + chunk_size])
-        chunks.append(chunk)
+    for section in sections:
+        section = section.strip()
+
+        if section:
+            chunks.append(section)
 
     return chunks
