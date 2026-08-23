@@ -27,17 +27,28 @@ class Retriever:
         self.index = faiss.IndexFlatL2(embeddings.shape[1])
         self.index.add(embeddings)
 
-    def search(self, query, top_k=3):
+    def search(self, query, top_k=3, threshold=1.0):
         """
-        Retrieve the most relevant chunks for a user query.
+        Retrieve the most relevant knowledge base chunks.
+
+        If the closest result is above the threshold,
+        the query is considered outside the knowledge base.
         """
+
         if self.index is None:
             raise ValueError("The index has not been built yet.")
 
         query_embedding = self.embedding_model.encode([query])
         query_embedding = np.array(query_embedding).astype("float32")
 
-        distances, indices = self.index.search(query_embedding, top_k)
+        distances, indices = self.index.search(
+            query_embedding,
+            top_k
+        )
+
+        # Check whether the best result is relevant enough
+        if distances[0][0] > threshold:
+            return []
 
         results = []
 

@@ -3,6 +3,7 @@ from pathlib import Path
 
 import streamlit as st
 
+
 # ============================================================
 # PROJECT PATHS
 # ============================================================
@@ -26,47 +27,80 @@ st.set_page_config(
     page_title="BNPL AI Assistant",
     page_icon="💳",
     layout="centered",
+    initial_sidebar_state="collapsed",
 )
 
 
 # ============================================================
-# SIMPLE STYLING
+# SIMPLE CSS
 # ============================================================
 
 st.markdown(
     """
     <style>
-        .stApp {
-            background-color: #f8fafc;
-        }
 
-        .block-container {
-            max-width: 850px;
-            padding-top: 3rem;
-        }
+    .stApp {
+        background-color: #f8fafc;
+    }
 
-        h1 {
-            color: #111827;
-            font-weight: 800;
-        }
+    .main-title {
+        text-align: center;
+        font-size: 38px;
+        font-weight: 800;
+        color: #1e293b;
+        margin-bottom: 5px;
+    }
 
-        .subtitle {
-            color: #64748b;
-            font-size: 1.05rem;
-            margin-bottom: 2rem;
-        }
+    .subtitle {
+        text-align: center;
+        color: #64748b;
+        font-size: 16px;
+        margin-bottom: 30px;
+    }
 
-        .answer-box {
-            background-color: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 1.5rem;
-            margin-top: 1rem;
-        }
     </style>
     """,
     unsafe_allow_html=True,
 )
+
+
+# ============================================================
+# HEADER
+# ============================================================
+
+st.markdown(
+    '<div class="main-title">💳 BNPL AI Assistant</div>',
+    unsafe_allow_html=True,
+)
+
+st.markdown(
+    '<div class="subtitle">'
+    'Your smart assistant for payments, installments, refunds, and eligibility.'
+    '</div>',
+    unsafe_allow_html=True,
+)
+
+
+# ============================================================
+# FEATURES
+# ============================================================
+
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    st.metric("💰", "Payments")
+
+with col2:
+    st.metric("📅", "Installments")
+
+with col3:
+    st.metric("↩️", "Refunds")
+
+with col4:
+    st.metric("✓", "Eligibility")
+
+
+st.divider()
 
 
 # ============================================================
@@ -99,51 +133,13 @@ def load_rag_system():
 
 
 # ============================================================
-# HEADER
-# ============================================================
-
-st.title("💳 BNPL AI Assistant")
-
-st.markdown(
-    """
-    <div class="subtitle">
-    Your smart assistant for payments, installments,
-    refunds, and eligibility.
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
-
-
-# ============================================================
-# FEATURE CARDS
-# ============================================================
-
-col1, col2, col3, col4 = st.columns(4)
-
-with col1:
-    st.metric("💰", "Payments")
-
-with col2:
-    st.metric("📅", "Installments")
-
-with col3:
-    st.metric("↩️", "Refunds")
-
-with col4:
-    st.metric("✓", "Eligibility")
-
-
-st.divider()
-
-
-# ============================================================
-# LOAD MODEL
+# INITIALIZE SYSTEM
 # ============================================================
 
 with st.spinner("Loading BNPL AI Assistant..."):
 
     try:
+
         retriever, generator = load_rag_system()
 
     except Exception as e:
@@ -162,19 +158,18 @@ with st.spinner("Loading BNPL AI Assistant..."):
 st.subheader("Ask your question")
 
 question = st.text_input(
-    "Your question",
+    "Enter your question",
     placeholder="e.g. What happens if I miss a payment?",
-    label_visibility="collapsed",
 )
 
 
 # ============================================================
-# ASK
+# ASK BUTTON
 # ============================================================
 
 if st.button(
     "🤖 Ask BNPL Assistant",
-    use_container_width=True
+    use_container_width=True,
 ):
 
     if not question.strip():
@@ -185,52 +180,56 @@ if st.button(
 
         with st.spinner("Finding the best answer..."):
 
+            # ------------------------------------------------
+            # Retrieve relevant context
+            # ------------------------------------------------
+
             results = retriever.search(
                 question,
-                top_k=3
+                top_k=3,
+                threshold=1.0,
             )
 
-            retrieved_text = " ".join(
-                result["chunk"]
-                for result in results
-            )
+            # ------------------------------------------------
+            # Guardrail
+            # ------------------------------------------------
 
-            answer = generator.generate(
-                question=question,
-                context=retrieved_text
-            )
+            if not results:
+
+                answer = (
+                    "I don't have enough information in my "
+                    "knowledge base to answer this question."
+                )
+
+            else:
+
+                retrieved_text = " ".join(
+                    result["chunk"]
+                    for result in results
+                )
+
+                answer = generator.generate(
+                    question=question,
+                    context=retrieved_text,
+                )
+
 
         # ====================================================
         # ANSWER
         # ====================================================
 
-        st.subheader("🤖 Answer")
+        with st.container(border=True):
 
-        st.info(answer)
+            st.markdown("### 🤖 Answer")
 
-
-# ============================================================
-# EXAMPLE QUESTIONS
-# ============================================================
-
-st.divider()
-
-st.subheader("💡 Try asking")
-
-examples = [
-    "What happens if I miss a payment?",
-    "How can I pay my installments?",
-    "How many installments can I make?",
-    "What happens when I receive a refund?",
-]
-
-for example in examples:
-    st.write(f"• {example}")
+            st.write(answer)
 
 
 # ============================================================
 # FOOTER
 # ============================================================
+
+st.divider()
 
 st.caption(
     "Powered by Retrieval-Augmented Generation (RAG) · BNPL AI Assistant"
