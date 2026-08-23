@@ -128,21 +128,6 @@ print(
     f"({retrieval_correct}/{len(questions)})"
 )
 
-print(
-    f"Answer Quality Pass Rate: "
-    f"{answer_accuracy:.1f}% "
-    f"({answer_correct}/{len(questions)})"
-)
-
-print("\n" + "=" * 60)
-print("FINAL EVALUATION RESULTS")
-print("=" * 60)
-
-print(
-    f"Retrieval Accuracy: "
-    f"{retrieval_accuracy:.1f}% "
-    f"({retrieval_correct}/{len(questions)})"
-)
 
 print(
     f"Answer Quality Pass Rate: "
