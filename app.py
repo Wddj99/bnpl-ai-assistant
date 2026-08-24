@@ -32,78 +32,6 @@ st.set_page_config(
 
 
 # ============================================================
-# SIMPLE CSS
-# ============================================================
-
-st.markdown(
-    """
-    <style>
-
-    .stApp {
-        background-color: #f8fafc;
-    }
-
-    .main-title {
-        text-align: center;
-        font-size: 38px;
-        font-weight: 800;
-        color: #1e293b;
-        margin-bottom: 5px;
-    }
-
-    .subtitle {
-        text-align: center;
-        color: #64748b;
-        font-size: 16px;
-        margin-bottom: 30px;
-    }
-
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-
-
-# ============================================================
-# HEADER
-# ============================================================
-
-st.markdown(
-    '<div class="main-title">💳 BNPL AI Assistant</div>',
-    unsafe_allow_html=True,
-)
-
-st.markdown(
-    '<div class="subtitle">'
-    'Your smart assistant for payments, installments, refunds, and eligibility.'
-    '</div>',
-    unsafe_allow_html=True,
-)
-
-
-# ============================================================
-# FEATURES
-# ============================================================
-
-col1, col2, col3, col4 = st.columns(4)
-
-with col1:
-    st.metric("💰", "Payments")
-
-with col2:
-    st.metric("📅", "Installments")
-
-with col3:
-    st.metric("↩️", "Refunds")
-
-with col4:
-    st.metric("✓", "Eligibility")
-
-
-st.divider()
-
-
-# ============================================================
 # LOAD RAG SYSTEM
 # ============================================================
 
@@ -118,13 +46,11 @@ def load_rag_system():
     )
 
     text = load_knowledge_base(knowledge_base_path)
-
     chunks = create_chunks(text)
 
     embedding_model = EmbeddingModel()
 
     retriever = Retriever(embedding_model)
-
     retriever.build_index(chunks)
 
     generator = AnswerGenerator()
@@ -132,35 +58,165 @@ def load_rag_system():
     return retriever, generator
 
 
-# ============================================================
-# INITIALIZE SYSTEM
-# ============================================================
-
 with st.spinner("Loading BNPL AI Assistant..."):
 
     try:
-
         retriever, generator = load_rag_system()
 
     except Exception as e:
-
         st.error("Unable to load the AI assistant.")
-
         st.exception(e)
-
         st.stop()
 
 
 # ============================================================
-# QUESTION
+# HEADER
+# ============================================================
+
+st.title("💳 BNPL AI Assistant")
+
+st.caption(
+    "Your smart assistant for payments, installments, "
+    "refunds, and eligibility."
+)
+
+
+# ============================================================
+# TOPIC OVERVIEW
+# ============================================================
+
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+    st.metric("💰", "Payments")
+
+with col2:
+    st.metric("📅", "Installments")
+
+with col3:
+    st.metric("↩️", "Refunds")
+
+with col4:
+    st.metric("✅", "Eligibility")
+
+
+st.divider()
+
+
+# ============================================================
+# SESSION STATE
+# ============================================================
+
+if "question" not in st.session_state:
+    st.session_state.question = ""
+
+if "answer" not in st.session_state:
+    st.session_state.answer = None
+
+
+# ============================================================
+# SUGGESTED QUESTIONS
+# ============================================================
+
+st.subheader("💡 Try an example")
+
+col1, col2 = st.columns(2)
+
+with col1:
+
+    if st.button(
+        "Missed payment",
+        use_container_width=True,
+    ):
+        st.session_state.question = (
+            "What happens if I miss a payment?"
+        )
+        st.session_state.answer = None
+        st.rerun()
+
+with col2:
+
+    if st.button(
+        "Payment methods",
+        use_container_width=True,
+    ):
+        st.session_state.question = (
+            "How can I pay my installments?"
+        )
+        st.session_state.answer = None
+        st.rerun()
+
+
+col3, col4 = st.columns(2)
+
+with col3:
+
+    if st.button(
+        "Installment schedule",
+        use_container_width=True,
+    ):
+        st.session_state.question = (
+            "How many installments can I make?"
+        )
+        st.session_state.answer = None
+        st.rerun()
+
+with col4:
+
+    if st.button(
+        "Eligibility",
+        use_container_width=True,
+    ):
+        st.session_state.question = (
+            "What factors affect installment eligibility?"
+        )
+        st.session_state.answer = None
+        st.rerun()
+
+
+col5, col6 = st.columns(2)
+
+with col5:
+
+    if st.button(
+        "Refunds",
+        use_container_width=True,
+    ):
+        st.session_state.question = (
+            "How does a refund affect my installment plan?"
+        )
+        st.session_state.answer = None
+        st.rerun()
+
+with col6:
+
+    if st.button(
+        "Late payment",
+        use_container_width=True,
+    ):
+        st.session_state.question = (
+            "What happens if a scheduled payment is missed?"
+        )
+        st.session_state.answer = None
+        st.rerun()
+
+
+st.divider()
+
+
+# ============================================================
+# QUESTION INPUT
 # ============================================================
 
 st.subheader("Ask your question")
 
 question = st.text_input(
     "Enter your question",
+    value=st.session_state.question,
     placeholder="e.g. What happens if I miss a payment?",
 )
+
+st.session_state.question = question
 
 
 # ============================================================
@@ -180,20 +236,13 @@ if st.button(
 
         with st.spinner("Finding the best answer..."):
 
-            # ------------------------------------------------
-            # Retrieve relevant context
-            # ------------------------------------------------
-
             results = retriever.search(
                 question,
                 top_k=3,
                 threshold=1.0,
             )
 
-            # ------------------------------------------------
             # Guardrail
-            # ------------------------------------------------
-
             if not results:
 
                 answer = (
@@ -213,16 +262,19 @@ if st.button(
                     context=retrieved_text,
                 )
 
+            st.session_state.answer = answer
 
-        # ====================================================
-        # ANSWER
-        # ====================================================
 
-        with st.container(border=True):
+# ============================================================
+# ANSWER
+# ============================================================
 
-            st.markdown("### 🤖 Answer")
+if st.session_state.answer:
 
-            st.write(answer)
+    st.subheader("🤖 Answer")
+
+    with st.container(border=True):
+        st.write(st.session_state.answer)
 
 
 # ============================================================
@@ -232,5 +284,6 @@ if st.button(
 st.divider()
 
 st.caption(
-    "Powered by Retrieval-Augmented Generation (RAG) · BNPL AI Assistant"
+    "Powered by Retrieval-Augmented Generation (RAG) "
+    "· BNPL AI Assistant"
 )
